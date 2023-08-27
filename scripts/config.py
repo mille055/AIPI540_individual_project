@@ -33,7 +33,7 @@ def get_home_path():
 home_path = get_home_path()
 parent_directory = os.path.dirname(home_path)
 #model_paths = {'cnn': '../models/pixel_model_041623.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weights042423.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlp042423.pth', 'scaler': '../models/metadata_scaler.pkl' }
-model_paths = {'cnn': os.path.join(parent_directory, 'models/pixel_model_041623.pth'), 'nlp': os.path.join(parent_directory, 'models/text_model20230415.st'), 'meta': '../../models/meta_04152023.skl', 'fusion': '../../models/fusion_model_weights042423.pth', 'fusion_no_nlp': '../../models/fusion_model_weights_no_nlp042423.pth', 'scaler': '../../models/metadata_scaler.pkl' }
+model_paths = {'cnn': os.path.join(parent_directory, 'models/pixel_model_041623.pth'), 'nlp': os.path.join(parent_directory, 'models/text_model20230415.st'), 'meta': os.path.join(parent_directory, 'models/meta_04152023.skl'), 'fusion': os.path.join(parent_directory, 'models/fusion_model_weights042423.pth'), 'fusion_no_nlp': os.path.join(parent_directory, 'models/fusion_model_weights_no_nlp042423.pth'), 'scaler': os.path.join(parent_directory, 'models/metadata_scaler.pkl') }
 
 #validation split
 val_list =  [41, 84, 14, 25, 76, 47,62,0,55,63,101,18,81,3,4,95,66] #using same train/val/test split as in the original split based on the metadata classifier
