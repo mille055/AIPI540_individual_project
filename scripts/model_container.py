@@ -1,7 +1,7 @@
 import pickle
 #import torch
 
-from config import model_paths
+from config import model_paths, model_paths2
 from cnn.cnn_inference import load_pixel_model
 
 class ModelContainer:
