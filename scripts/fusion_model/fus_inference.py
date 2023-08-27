@@ -11,7 +11,7 @@ from fusion_model.fus_model import FusionModel
 from cnn.cnn_inference import pixel_inference, load_pixel_model
 from metadata.meta_inference import get_meta_inference
 from NLP.NLP_inference import get_NLP_inference, load_NLP_model
-from config import feats_to_keep, classes, model_paths
+from config import feats_to_keep, classes, model_paths, model_paths2
 from model_container import ModelContainer
 from utils import *
 
