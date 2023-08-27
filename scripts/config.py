@@ -22,7 +22,15 @@ file_dict = {
 'labels_file': '../data/cmm_labels.txt'
 }
 
-home_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+def get_home_path():
+    try:
+        # This will work in Python scripts
+        return os.path.dirname(os.path.abspath(__file__))
+    except NameError:
+        # This will work in Jupyter/Colab
+        return os.path.abspath('')
+
+home_path = get_home_path()
 #model_paths = {'cnn': '../models/pixel_model_041623.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weights042423.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlp042423.pth', 'scaler': '../models/metadata_scaler.pkl' }
 model_paths = {'cnn': os.path.join(home_path, './models/pixel_model_041623.pth'), 'nlp': os.path.join(home_path, './models/text_model20230415.st'), 'meta': '../../models/meta_04152023.skl', 'fusion': '../../models/fusion_model_weights042423.pth', 'fusion_no_nlp': '../../models/fusion_model_weights_no_nlp042423.pth', 'scaler': '../../models/metadata_scaler.pkl' }
 
