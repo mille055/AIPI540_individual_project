@@ -249,7 +249,7 @@ abd_label_dict = {
     },
     '7': {
         'long': 'Coronal T2w',
-        'short': 't2',
+        'short': 't2 cor',
         'plane': 'cor',
         'contrast': '0'
     },
@@ -261,7 +261,7 @@ abd_label_dict = {
     },
     '9': {
         'long': 'Axial T2w',
-        'short': 't2',
+        'short': 't2 ax',
         'plane': 'ax',
         'contrast': '0'
     },
@@ -279,25 +279,25 @@ abd_label_dict = {
     },
     '12': {
         'long': 'Axial Transitional_Hepatocyte T1w',
-        'short': 'hepatobiliary',
+        'short': 'hepatobiliary ax',
         'plane': 'ax',
         'contrast': '1'
     },
     '13': {
         'long': 'Coronal Transitional_Hepatocyte T1w',
-        'short': 'hepatobiliary',
+        'short': 'hepatobiliary cor',
         'plane': 'cor',
         'contrast': '1'
     },
     '14': {
         'long': 'Axial In Phase',
-        'short': 'in_phase',
+        'short': 'in_phase ax',
         'plane': 'ax',
         'contrast': '0'
     },
     '15': {
         'long': 'Coronal In Phase',
-        'short': 'in_phase',
+        'short': 'in_phase cor',
         'plane': 'cor',
         'contrast': '0'
     },
@@ -321,13 +321,13 @@ abd_label_dict = {
     },
     '19': {
         'long': 'Axial Opposed Phase',
-        'short': 'opposed_phase',
+        'short': 'opposed_phase ax',
         'plane': 'ax',
         'contrast': '0'
     },
     '20': {
         'long': 'Coronal Opposed Phase',
-        'short': 'opposed_phase',
+        'short': 'opposed_phase cor',
         'plane': 'cor',
         'contrast': '0'
     },
@@ -351,7 +351,7 @@ abd_label_dict = {
     },
     '24': {
         'long': 'Coronal Precontrast Fat Suppressed T1w',
-        'short': 't1_fat_sat',
+        'short': 't1_fat_sat cor',
         'plane': 'cor',
         'contrast': '0'
     },
@@ -393,13 +393,13 @@ abd_label_dict = {
     }, ## no longer in use below
      '30': {
         'long': 'Axial Post Contrast Fat Suppressed T1w',
-        'short': 't1_fat_sat',
+        'short': 't1_fat_sat ax',
         'plane': 'ax',
         'contrast': '1'
     },
     '31': {
         'long': 'Coronal Post Contrast Fat Suppressed T1w',
-        'short': 't1_fat_sat',
+        'short': 't1_fat_sat cor',
         'plane': 'cor',
         'contrast': '1'
     },

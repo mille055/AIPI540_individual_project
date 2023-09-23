@@ -28,9 +28,9 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from sklearn.linear_model import LogisticRegression
 from sklearn.utils.validation import check_is_fitted
 ### local imports ###
-from config import file_dict, abd_label_dict, classes, column_lists, feats
-from config import val_list, train_val_split_percent, random_seed, data_transforms
-from config import sentence_encoder, series_description_column
+from scripts.config import file_dict, abd_label_dict, classes, column_lists, feats
+from scripts.config import val_list, train_val_split_percent, random_seed, data_transforms
+from scripts.config import sentence_encoder, series_description_column
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -394,7 +394,7 @@ def plot_and_save_cm(ytrue, ypreds, fname):
 
 # adds the preds and probs to select rows from the original data frame (patient and study info)
 def make_results_df(preds, probs, true, df):
-    return pd.DataFrame({'preds': preds, 'true': true, 'probs': [row.tolist() for row in probs], 'patientID': df['patientID'], 'series_description': df['SeriesDescription'], 'contrast': df['contrast'], 'plane': df['plane']  })
+    return pd.DataFrame({'preds': preds, 'true': true, 'probs': [row.tolist() for row in probs], 'patientID': df['patientID'], 'series_description': df['SeriesDescription'], 'series': df['series'], 'contrast': df['contrast'], 'plane': df['plane']  })
 
 
     
@@ -417,6 +417,30 @@ def display_and_save_results(y_pred, y_true, classes=classes, fn='', saveflag = 
         plt.savefig("../assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif",dpi=300, bbox_inches = 'tight')     
 
     return cm      
+
+def display_and_save_results2(y_pred, y_true, classes = classes, fn='', saveflag=True):
+    # Remove classes that are not in y_true or y_pred to eliminate empty rows/columns
+    unique_labels = np.unique(np.concatenate((y_true, y_pred)))
+    classes = [x for x in classes if x in unique_labels]
+    class_text_labels = [abd_label_dict[str(x)]['short'] for x in classes]
+
+    # Generate a classification report based on the true labels and predicted labels
+    print(classification_report(y_true, y_pred, labels=classes, target_names=class_text_labels))
+
+    # Generate a confusion matrix based on the true labels and predicted labels
+    cm = confusion_matrix(y_true=y_true, y_pred=y_pred, labels=classes)
+
+    # Plot confusion matrix
+    plt.figure(figsize=(25, 25))
+    cm_display = ConfusionMatrixDisplay(cm, display_labels=class_text_labels)
+    cm_display.plot(xticks_rotation='vertical', cmap='Blues')
+    plt.tight_layout()
+    if saveflag:
+        plt.savefig("../assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif", dpi=300, bbox_inches='tight')
+    plt.show()
+
+    return cm
+
 
 def create_datasets(train_datafile, val_datafile, test_datafile):
     # reads in the dataframes from csv

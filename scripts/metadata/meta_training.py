@@ -14,11 +14,11 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from pprint import pprint
 import pickle
 
-from config import file_dict, feats, feats_to_keep, column_lists
-from config import abd_label_dict, val_list, train_val_split_percent, random_seed, data_transforms
-from config import sentence_encoder, series_description_column
-from config import RF_parameters
-from utils import *
+from scripts.config import file_dict, feats, feats_to_keep, column_lists
+from scripts.config import abd_label_dict, val_list, train_val_split_percent, random_seed, data_transforms
+from scripts.config import sentence_encoder, series_description_column
+from scripts.config import RF_parameters
+from scripts.utils import *
 
 #randomized grid search for hyperparameters
 def train_fit_parameter_trial(train, y, features, fname='../models/model-run.skl'):

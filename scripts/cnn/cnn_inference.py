@@ -12,12 +12,12 @@ import os
 
 
 #local imports
-from .cnn_model import CustomResNet50
+from .cnn_model import CustomResNet50, CustomDenseNet
 from .cnn_data_loaders import get_data_loaders, data_transforms
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config import classes
-from utils import create_datasets
+from scripts.config import classes
+from scripts.utils import create_datasets
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -135,23 +135,38 @@ def pixel_inference(model, filelist, classes=classes, device=device):
     return predictions_array, probabilities_array
 
 
-def load_pixel_model(modelpath, device=device, output_units = 19):
-    
-    model = models.resnet50(pretrained=True) # Load the ResNet50 model 
+def load_pixel_model(modelpath, device=device, output_units = 19, model_type = 'ResNet50'):
+    '''
+    Loads the model for the CNN assessment. 
+    Input: 
+        modelpath(path): path to the model
+        device(cpu or gpu)
+        outputunits(int): number of classes
 
-    # Replace the output layer to match the number of output units in your fine-tuned model
-    num_finetuned_output_units = output_units
-    num_features = model.fc.in_features
-    model.fc = torch.nn.Linear(num_features, num_finetuned_output_units)
+    Output:
+        model(model): Resnet50 transfer learning model
+    '''
+    if model_type=='ResNet50':
+        model = models.resnet50(pretrained=True) # Load the ResNet50 model 
 
-    # Load the saved state_dict
-    state_dict = torch.load(modelpath, map_location=device)
-    model.load_state_dict(state_dict)
+        # Replace the output layer to match the number of output units in your fine-tuned model
+        num_finetuned_output_units = output_units
+        num_features = model.fc.in_features
+        model.fc = torch.nn.Linear(num_features, num_finetuned_output_units)
 
+        # Load the saved state_dict
+        state_dict = torch.load(modelpath, map_location=torch.device('cpu'))
+        model.load_state_dict(state_dict)
+    else:
+        model = CustomDenseNet(pretrained=False)
+        state_dict = torch.load(modelpath, map_location=torch.device('cpu'))
+        model.load_state_dict(state_dict) 
+
+    model=model.to(device)
     return model
 
-# Display a batch of predictions
 
+# Display a batch of predictions
 def visualize_results(model,dataloader, classes=classes, device=device):
     model = model.to(device) # Send model to GPU if available
     with torch.no_grad():
