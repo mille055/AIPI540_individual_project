@@ -17,10 +17,10 @@ file_dict = {
 'metadata_model_file':  './stored_assets/metadata_model.pkl',
 'pixel_model_file': './stored_assets/pixel_model_file.pkl',
 'series_description_model_file': './stored_assets/series_description_model_file.pkl',
-'labels_file': '../data/cmm_labels.txt'
+'labels_file': '../data/labels.txt'
 }
 
-model_paths = {'cnn': '../models/pixel_model_041623.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weights042423.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlp042423.pth', 'scaler': '../models/metadata_scaler.pkl' }
+model_paths = {'cnn': '../models/pixel_model_041623.pth', 'cnnDense': '../models/best0606.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weightsDense20230919.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlpDense20230919.pth', 'scaler': '../models/metadata_scaler.pkl' }
 
 #validation split
 val_list =  [41, 84, 14, 25, 76, 47,62,0,55,63,101,18,81,3,4,95,66] #using same train/val/test split as in the original split based on the metadata classifier
