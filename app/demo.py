@@ -36,16 +36,15 @@ from azure.storage.blob import BlobServiceClient
 st.set_page_config(page_title="Abdominal MRI Series Classifier", layout="wide")
 
 st.title("Abdominal MRI Series Classifier")
-st.subheader("AIPI540 Project, Spring 2023")
-st.write("Chad Miller")
-
+st.subheader("Metadata, Pixel-Based, or Fusion")
 
 #get instances of model for call to process
 model_container = ModelContainer()
 fusion_model = FusionModel(model_container = model_container, num_classes=19)
 
 # the place to find the image data
-start_folder = "/volumes/cm7/start_folder"
+#start_folder = "/volumes/cm7/start_folder"
+start_folder = st.sidebar.text_input("Enter source folder path:", value="")
 
 # the place to put processed image data
 destination_folder = st.sidebar.text_input("Enter destination folder path:", value="")

@@ -462,3 +462,64 @@ def create_datasets(train_datafile, val_datafile, test_datafile):
 
 
 
+
+
+# bootstrap over the test samples for statitics
+# Example usage:
+# meta_acc_int, meta_f1_int, meta_f1_overall_int = bootstrap_results(meta_test_results_df, 'preds', 'true')
+
+
+def bootstrap_results(df, preds, true, sample_fraction=0.5, num_samples=1000):
+    # List of unique class labels in your data
+    unique_classes = df[true].unique()
+
+    # Initialize empty lists to store bootstrap statistics
+    bootstrap_accuracy = []
+    bootstrap_f1_score = []
+    bootstrap_f1_scores = {class_label: [] for class_label in unique_classes}
+
+    # Perform bootstrapping
+    for _ in range(num_samples):
+        # Generate a bootstrap sample by resampling the DataFrame with replacement
+        bootstrap_sample = df.sample(n=int(sample_fraction * len(df)), replace=True)
+
+        # Calculate accuracy and F1 score for the bootstrap sample
+        accuracy = accuracy_score(bootstrap_sample[true], bootstrap_sample[preds])
+        bootstrap_accuracy.append(accuracy)
+
+        micro_avg_f1 = f1_score(bootstrap_sample[true], bootstrap_sample[preds], average='weighted')
+        bootstrap_f1_score.append(micro_avg_f1)
+
+        # Calculate F1 score for each class and store in a dictionary
+        for class_label in unique_classes:
+            true_values = (bootstrap_sample[true] == class_label).astype(int)
+            predicted_values = (bootstrap_sample[preds] == class_label).astype(int)
+            f1 = f1_score(true_values, predicted_values)
+            bootstrap_f1_scores[class_label].append(f1)
+
+    # Calculate the lower and upper percentiles for the accuracy confidence interval
+    accuracy_interval = np.percentile(bootstrap_accuracy, [2.5, 97.5])
+    f1_score_interval = np.percentile(bootstrap_f1_score, [2.5, 97.5])
+
+    # Calculate confidence intervals for F1 scores for each class
+    f1_scores_interval = {}
+    for class_label in unique_classes:
+        f1_scores = bootstrap_f1_score[class_label]
+        f1_scores_interval[class_label] = np.percentile(f1_scores, [2.5, 97.5])
+
+    # Calculate overall F1 score confidence intervals
+    overall_f1_scores = [f1 for class_f1_scores in bootstrap_f1_scores.values() for f1 in class_f1_scores]
+    print('overall_f1_scores:', overall_f1_scores)
+    overall_f1_score_interval = np.percentile(overall_f1_scores, [2.5, 97.5])
+
+    # Print the confidence intervals
+    print("95% Confidence Interval for Accuracy:", accuracy_interval)
+    print("95% Confidence Intervals for F1 Score: ", f1_score_interval)
+    print("95% Confidence Interval for the Overall F1 scores:", overall_f1_score_interval)
+    print("95% Confidence Intervals for F1 Scores (by class):")
+    for class_label, interval in f1_scores_interval.items():
+        print(f"Class {class_label}: {interval}")
+    
+    return accuracy_interval, f1_score_interval, overall_f1_score_interval, bootstrap_accuracy, bootstrap_f1_scores
+
+
