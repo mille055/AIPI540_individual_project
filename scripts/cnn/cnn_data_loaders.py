@@ -1,11 +1,13 @@
 import torch
 from torch.utils.data import DataLoader
-from scripts.cnn.cnn_dataset import ImgDataset
 import torchvision
 from torchvision import datasets, models, transforms
 from torch.utils.data import Dataset
 
-
+try:
+    from cnn_dataset import ImgDataset
+except ImportError:
+    from .cnn_dataset import ImgDataset
 
 # Data cropping and normalization, also converts single channel to 3 channel for the model
 data_transforms = {

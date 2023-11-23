@@ -4,8 +4,10 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-from scripts.config import classes
- 
+try:
+    from config import classes
+except ImportError:
+    from ..config import classes
 
 class CustomResNet50(nn.Module):
     def __init__(self, num_classes=len(classes)):

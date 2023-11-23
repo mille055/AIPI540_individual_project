@@ -127,13 +127,13 @@ def train_fusion_model(model, train_loader, val_loader, test_loader, device, opt
 def main():
 
     #load in pickled dataframes from the base model training:
-    with open('../data/fusion_train.pkl', 'rb') as file:
+    with open('data/fusion_train.pkl', 'rb') as file:
         ftrain = pickle.load(file)
 
-    with open('../data/fusion_val.pkl', 'rb') as file:
+    with open('data/fusion_val.pkl', 'rb') as file:
         fval = pickle.load(file)
 
-    with open('../data/fusion_test.pkl', 'rb') as file:
+    with open('data/fusion_test.pkl', 'rb') as file:
         ftest = pickle.load(file)
 
     # get model container for the base models
@@ -167,10 +167,10 @@ def main():
     print(training_history_with_nlp)
 
     # save trained model
-    model_weights_path = '../models/fusion_model_weights_new.pth'
+    model_weights_path = 'models/fusion_model_weights_new.pth'
     torch.save(trained_model.state_dict(), model_weights_path)
 
-    model_weights_path_no_nlp = '../models/fusion_model_weights_no_nlp_new.pth'
+    model_weights_path_no_nlp = 'models/fusion_model_weights_no_nlp_new.pth'
     torch.save(trained_model_no_nlp.state_dict(), model_weights_path_no_nlp)
 
     return trained_model, trained_model_no_nlp

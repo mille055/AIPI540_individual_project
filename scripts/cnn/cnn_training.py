@@ -14,12 +14,17 @@ import time, copy, os
 
 
 # local imports
-from scripts.config import classes
+try:
+    from config import classes
+    from utils import *
+except ImportError:
+    from ..config import classes
+    from ..utils import *
 from cnn.cnn_model import CustomResNet50
 from cnn.cnn_inference import test_pix_model, pixel_inference
 from cnn.cnn_data_loaders import get_data_loaders
 from cnn.cnn_dataset import ImgDataset
-from scripts.utils import *
+
 
 # Determine the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

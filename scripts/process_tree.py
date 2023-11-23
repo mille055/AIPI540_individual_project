@@ -5,8 +5,8 @@ from fusion_model.fus_inference import get_fusion_inference
 from fusion_model.fus_model import FusionModel
 from model_container import ModelContainer
 import pydicom
-from scripts.utils import *
-from scripts.config import model_paths
+from utils import *
+from config import model_paths
 
 
 

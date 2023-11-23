@@ -5,22 +5,55 @@ import pandas as pd
 
 
   ### locations of assets ###
+# file_dict = {
+# 'img_data_dir_colab':  '/content/gdrive/MyDrive/WW_MRI_abd2/split/',
+# 'img_data_dir_local': '/volumes/cm7/Abdominal_MRI_dataset_split/',
+# 'txt_data_dir':  '../data/',
+# 'test_datafile': '../data/X_test02282023.pkl',
+# 'train_datafile': '../data/X_train02282023.pkl',
+# 'dataset_file': './stored_assets/dataset.pkl',
+# 'train_csv_file': 'trainfiles.csv',
+# 'test_csv_file': 'testfiles.csv',
+# 'metadata_model_file':  './stored_assets/metadata_model.pkl',
+# 'pixel_model_file': './stored_assets/pixel_model_file.pkl',
+# 'series_description_model_file': './stored_assets/series_description_model_file.pkl',
+# 'labels_file': '../data/labels.txt'
+# }
+
+# model_paths = {'cnn': '../models/pixel_model_041623.pth', 'cnnDense': '../models/DenseNet_model.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weightsDense20230919.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlpDense20230919.pth', 'scaler': '../models/metadata_scaler.pkl' }
+
+import os
+
+# Determine the project root directory
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Locations of assets
 file_dict = {
-'img_data_dir_colab':  '/content/gdrive/MyDrive/WW_MRI_abd2/split/',
-'img_data_dir_local': '/volumes/cm7/Abdominal_MRI_dataset_split/',
-'txt_data_dir':  '../data/',
-'test_datafile': '../data/X_test02282023.pkl',
-'train_datafile': '../data/X_train02282023.pkl',
-'dataset_file': './stored_assets/dataset.pkl',
-'train_csv_file': 'trainfiles.csv',
-'test_csv_file': 'testfiles.csv',
-'metadata_model_file':  './stored_assets/metadata_model.pkl',
-'pixel_model_file': './stored_assets/pixel_model_file.pkl',
-'series_description_model_file': './stored_assets/series_description_model_file.pkl',
-'labels_file': '../data/labels.txt'
+    'img_data_dir_colab': os.path.join(PROJECT_ROOT, 'content', 'gdrive', 'MyDrive', 'WW_MRI_abd2', 'split'),
+    'img_data_dir_local': os.path.join(PROJECT_ROOT, 'volumes', 'cm7', 'Abdominal_MRI_dataset_split'),
+    'txt_data_dir': os.path.join(PROJECT_ROOT, 'data'),
+    'test_datafile': os.path.join(PROJECT_ROOT, 'data', 'X_test02282023.pkl'),
+    'train_datafile': os.path.join(PROJECT_ROOT, 'data', 'X_train02282023.pkl'),
+    #'dataset_file': os.path.join(PROJECT_ROOT, 'stored_assets', 'dataset.pkl'),
+    'train_csv_file': os.path.join(PROJECT_ROOT,'data', 'trainfiles.csv'),
+    'test_csv_file': os.path.join(PROJECT_ROOT, 'data', 'testfiles.csv'),
+    #'metadata_model_file': os.path.join(PROJECT_ROOT, 'stored_assets', 'metadata_model.pkl'),
+    #'pixel_model_file': os.path.join(PROJECT_ROOT, 'stored_assets', 'pixel_model_file.pkl'),
+    #'series_description_model_file': os.path.join(PROJECT_ROOT, 'stored_assets', 'series_description_model_file.pkl'),
+    'labels_file': os.path.join(PROJECT_ROOT, 'data', 'labels.txt')
 }
 
-model_paths = {'cnn': '../models/pixel_model_041623.pth', 'cnnDense': '../models/DenseNet_model.pth', 'nlp': '../models/text_model20230415.st', 'meta': '../models/meta_04152023.skl', 'fusion': '../models/fusion_model_weightsDense20230919.pth', 'fusion_no_nlp': '../models/fusion_model_weights_no_nlpDense20230919.pth', 'scaler': '../models/metadata_scaler.pkl' }
+model_paths = {
+    'cnn': os.path.join(PROJECT_ROOT, 'models', 'pixel_model_041623.pth'),
+    'cnnDense': os.path.join(PROJECT_ROOT, 'models', 'DenseNet_model.pth'),
+    'nlp': os.path.join(PROJECT_ROOT, 'models', 'text_model20230415.st'),
+    'meta': os.path.join(PROJECT_ROOT, 'models', 'meta_04152023.skl'),
+    'fusion': os.path.join(PROJECT_ROOT, 'models', 'fusion_model_weightsDense20230919.pth'),
+    'fusion_no_nlp': os.path.join(PROJECT_ROOT, 'models', 'fusion_model_weights_no_nlpDense20230919.pth'),
+    'scaler': os.path.join(PROJECT_ROOT, 'models', 'metadata_scaler.pkl')
+}
+
+
 
 #validation split
 val_list =  [41, 84, 14, 25, 76, 47,62,0,55,63,101,18,81,3,4,95,66] #using same train/val/test split as in the original split based on the metadata classifier

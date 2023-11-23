@@ -23,18 +23,24 @@ from fastcore.utils import gt
 from fastcore.foundation import L
 import sklearn
 from sklearn.model_selection import train_test_split
-
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report, recall_score, ConfusionMatrixDisplay
 from sklearn.linear_model import LogisticRegression
 from sklearn.utils.validation import check_is_fitted
-### local imports ###
-from scripts.config import file_dict, abd_label_dict, classes, column_lists, feats
-from scripts.config import val_list, train_val_split_percent, random_seed, data_transforms
-from scripts.config import sentence_encoder, series_description_column
 from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
+
+
+### local imports ###
+try:
+    from config import file_dict, abd_label_dict, classes, column_lists, feats, val_list, train_val_split_percent, random_seed, data_transforms, sentence_encoder, series_description_column # Use the absolute import
+except ImportError:
+    from .config import file_dict, abd_label_dict, classes, column_lists, feats, val_list, train_val_split_percent, random_seed, data_transforms, sentence_encoder, series_description_column # Use the relative import as a fallback
+# from config import file_dict, abd_label_dict, classes, column_lists, feats
+# from config import val_list, train_val_split_percent, random_seed, data_transforms
+# from config import sentence_encoder, series_description_column
+
 
 ### gets the dicom files from a provided directory ###
 def get_dicoms(path, first_dcm=False, **kwargs):
@@ -101,6 +107,10 @@ pd.DataFrame.from_dicoms = classmethod(from_dicoms)
 
 
 def get_series_fp(fn): return Path(fn).parent
+
+
+
+
 
  ### takes the contents of the dataframe column with path/filenames and converts pieces into separate df columns ###   
 def expand_filename_into_columns(df, cols):
@@ -200,7 +210,7 @@ def rescale_cols(df, cols, scaler=None, need_fit_scaler=False):
     if need_fit_scaler:
         df1[cols] = scaler.fit_transform(df1[cols])
         
-        with open('../models/metadata_scaler.pkl', 'wb') as f:
+        with open('models/metadata_scaler.pkl', 'wb') as f:
             pickle.dump(scaler, f)
     
     else:   
@@ -414,7 +424,7 @@ def display_and_save_results(y_pred, y_true, classes=classes, fn='', saveflag = 
     plt.tight_layout()
     #ConfusionMatrixDisplay(cm, display_labels=class_text_labels).plot(xticks_rotation = 'vertical', cmap='Blues')
     if saveflag:
-        plt.savefig("../assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif",dpi=300, bbox_inches = 'tight')     
+        plt.savefig("assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif",dpi=300, bbox_inches = 'tight')     
 
     return cm      
 
@@ -436,7 +446,7 @@ def display_and_save_results2(y_pred, y_true, classes = classes, fn='', saveflag
     cm_display.plot(xticks_rotation='vertical', cmap='Blues')
     plt.tight_layout()
     if saveflag:
-        plt.savefig("../assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif", dpi=300, bbox_inches='tight')
+        plt.savefig("assets/FigCM_"+fn+datetime.today().strftime('%Y%m%d')+".tif", dpi=300, bbox_inches='tight')
     plt.show()
 
     return cm
