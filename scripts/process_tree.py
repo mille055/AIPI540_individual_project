@@ -35,7 +35,7 @@ class Processor:
     Output: If pipeline_new_studies is run, it will return the processed dataframe
     
     '''
-    def __init__(self, data_dir, destination_folder, write_labels=True, overwrite = False, fusion_model=None, remoteflag = False, destblob = None, destclient = None):
+    def __init__(self, data_dir, destination_folder, write_labels=True, overwrite = False, fusion_model=None, remoteflag = False, destblob = None, destclient = None, use_heuristic = False, conf_threshold = 0.7):
         self.data_dir = data_dir
         self.destination_folder = destination_folder
         self.write_labels = write_labels
@@ -45,6 +45,8 @@ class Processor:
         self.remoteflag = remoteflag
         self.destblob = destblob
         self.destclient = destclient
+        self.use_heuristic = use_heuristic
+        self.confidence_threshold = conf_threshold
     
     # The overall active component which preprocesses the dataframe and calls the cascade
     # of actions to process the folder and its subdirectories which are typically 
@@ -104,7 +106,7 @@ class Processor:
         middle_image = sorted_series.iloc[middle_index]
 
         # Gets classification from the fusion model
-        predicted_series_class, predicted_series_confidence, ts_df = self.fusion_model.get_fusion_inference(middle_image)
+        predicted_series_class, predicted_series_confidence, ts_df = self.fusion_model.get_fusion_inference(middle_image, use_heuristic = self.use_heuristic, conf_threshold = self.confidence_threshold)
         # Writes the predictions into the dataframe
         sorted_series['predicted_class'] = predicted_series_class
         sorted_series['prediction_confidence'] = np.round(predicted_series_confidence, 2)

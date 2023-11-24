@@ -84,13 +84,16 @@ def normalize_array(arr):
     else:
         return 0
     
-def get_single_image_inference(image_path, model_container, fusion_model):
+def get_single_image_inference(image_path, model_container, fusion_model, use_heuristic = False, conf_threshold=0.7):
     '''
     Gets a set of inference predicted class and confidence score for the overall fusion model and for the submodels
     Inputs: 
         image_path(str): path to the image
         model_container(class): ModelContainer class which contains the models and/or their weights and the scaler for the metadata features
         fusion_model(class): FusionModel class which contains the fusion model and the function to get inference
+        use_heuristic(Bool): whether to use the heuristic combination of the metadata and pixel data where pixel data used if metadata confidence<0.7
+             (the default is to use the fusion model instead)
+        conf_threshold(float): the value to use for the confidence threshold in the heuristic model, default is 0.7
     Outputs: 
         predictions (str) and confidence (float) for the various classifiers
    '''
@@ -100,7 +103,7 @@ def get_single_image_inference(image_path, model_container, fusion_model):
     img_df = pd.DataFrame.from_dicoms([image_path])
     img_df, _ = preprocess(img_df, scaler)
 
-    predicted_series_class, predicted_series_confidence, submodel_df = fusion_model.get_fusion_inference(img_df)
+    predicted_series_class, predicted_series_confidence, submodel_df = fusion_model.get_fusion_inference(img_df, use_heuristic = use_heuristic, conf_threshold=conf_threshold)
     
     predicted_type = abd_label_dict[str(predicted_series_class)]['short'] #abd_label_dict[str(predicted_series_class)]['short']
     predicted_confidence = np.round(predicted_series_confidence, 2)

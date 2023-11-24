@@ -44,10 +44,13 @@ fusion_model = FusionModel(model_container=model_container, num_classes=19)
 # The place to put processed image data
 destination_folder = st.sidebar.text_input("Enter destination folder path:", value="")
 
-selected_images = None
+# Add a toggle (checkbox) to choose between models
+use_heuristic = st.sidebar.checkbox("Use Heuristic Model Instead of Fusion", value=False)
 
 # The place to find the image data
 start_folder = st.sidebar.text_input("Enter source folder path:", value="/volumes/cm7/start_folder")
+
+selected_images = None
 
 if start_folder and os.path.exists(start_folder) and os.path.isdir(start_folder):
     folder = st.sidebar.selectbox("Select a source folder:", os.listdir(start_folder), index=0)
@@ -151,13 +154,13 @@ if start_folder and os.path.exists(start_folder) and os.path.isdir(start_folder)
             if process_images:
                 if not destination_folder:
                     destination_folder = start_folder
-                processor = Processor(selected_folder, destination_folder, fusion_model=fusion_model, overwrite=True, write_labels=True)
+                processor = Processor(selected_folder, destination_folder, fusion_model=fusion_model, overwrite=True, write_labels=True, use_heuristic = use_heuristic)
 
                 new_processed_df = processor.pipeline_new_studies()
         
             get_inference = st.button("Get Inference For This Image")
             if get_inference:
-                predicted_type, predicted_confidence, prediction_meta, meta_confidence, cnn_prediction, cnn_confidence, nlp_prediction, nlp_confidence = get_single_image_inference(image_path, model_container, fusion_model)
+                predicted_type, predicted_confidence, prediction_meta, meta_confidence, cnn_prediction, cnn_confidence, nlp_prediction, nlp_confidence = get_single_image_inference(image_path, model_container, fusion_model, use_heuristic = use_heuristic, conf_threshold=0.7)
                 st.write(f'Predicted type: {predicted_type}, confidence score: {predicted_confidence:.2f}')
                 st.write(f'Metadata prediction:  {prediction_meta}, {meta_confidence:.2f}')
                 st.write(f'Pixel CNN prediction: {cnn_prediction}, {cnn_confidence:.2f}')

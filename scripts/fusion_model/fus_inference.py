@@ -44,6 +44,9 @@ def get_fusion_inference(row, model_container, classes=classes, features=feats_t
 
 
     if use_heuristic:
+        pred3 = None
+        prob3 = None
+        
         if torch.max(prob1_tensor) > conf_threshold:
             # Use metadata prediction
             predicted_class_idx = torch.argmax(prob1_tensor).item()
@@ -76,7 +79,8 @@ def get_fusion_inference(row, model_container, classes=classes, features=feats_t
             fused_output = fusion_model(prob1_tensor, prob2_tensor, prob3_tensor)
         else:
             fused_output = fusion_model(prob1_tensor, prob2_tensor)
-
+            pred3 = None
+            prob3 = None
         predicted_class = classes[torch.argmax(fused_output, dim=1).item()]
         confidence_score = torch.max(torch.softmax(fused_output, dim=1)).item()
 
