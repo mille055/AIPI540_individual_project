@@ -6,23 +6,31 @@ Accurate, automated MRI series identification is important for many applications
 The dataset is identical to that reported in [2] and is comprised of scans from multiple vendors and field strength scanners at a single institution. It is representative of typical MRI series from clinical abdominal MRI examinations. For each subject there is a single examination, which is typically comprised of 10-15 different series, and in each series there may be a few to more than 100 images of the same type. For series in which more than one set of parameters may be present (such as series containing diffusion weighted imaging with two b-values, or combined dynamic post-contrast series with multiple phases), the subgroups will be separated into distinct series to classify them separately. The original dataset contains 2,215 MRI series for 105 subjects with each subject having a single examination. The dataset was annotated for the series labels by three radiologists with 2-15 years of experience in abdominal imaging.  Nonstandard MRI series used in research protocols and series types with less than 10 examples have been excluded, leaving 19 classes; the training and testing datasets will be randomly selected from the remaining 2165 remaining series with an 80/20 split at the subject-level resulting in 1733 and 432 series, respectively, each with a single label for the series type. 
 
 ## Methods and Results:
-The metadata preprocessing and series selection algorithm are recreated from the paper by Gauriau et al. [1), in which a Random Forest classifier is trained to predict the sequence type (e.g. T1, T2, FLAIR, ...) of series of images from brain MRI. Such a tool may be used to select the appropriate series of images for input into a machine learning pipeline.
+Custom code was written in the Python programming language (PSF, version 3.8.8) for data processing and analysis. The “pydicom” library (version 2.1.2) was used for DICOM metadata extraction, with several DICOM attributes selected as potential features for machine learning according to the method described by Gauriau et al. [1]. The attributes were then tokenized using one-hot encoding. For DICOM attributes that consisted of a list of strings, each value was converted to a binary feature (presence or absence of the attribute). Attributes containing numerical values were normalized.	The “scikit-learn” library version 0.24.1 [15] was used to train the Random Forest classifier. Grid search was employed for hyperparameter optimization. 
+
 
 
 ## Metadata Classifier
 The metadata classifier is a RandomForest model. A grid search is used to tune hyperparameters, and the model is trained on the resultant optimized model. This can be quickly trained on a cpu, and has fairly high accruacy for many of the types of images. It does not, however, do well classifying post contrast series (e.g., portal venous phase, arterial, equilibrium) nor the precontrast series (T1 fat sat) that is performed with identical imaging parameters to the post contrast images. 
 
+
 ![img.tif](/assets/FigCM_meta02230406.tif)
 
 
 ## Pixel-based Classifier
+A single image from each series was selected to create the dataset similar to the method as described by Cluceru et al. [3]. In particular, the middle image from each series was used to represent the entire series for training, validation, and inference. The pixel values were extracted from the DICOM images using “pydicom” and image transformations were applied to the normalized pixel values to produce tensors of the appropriate size and shape for the model (3 x 299 x 299). Data augmentation steps during training included resize, random center crop, and color jitter. The model utilized transfer learning with a DenseNet121 base model trained with ImageNet weights, with the classification layer replaced by a single fully connected layer for the appropriate number of classes (19).   A grid search over optimizers and loss functions led to choosing Adam optimizer and a custom version of Focal Loss tailored for classification with multiple classes. 
 
 
 Results from current model:
 ![img.png](/assets/figures/FigPixel20230322.png)
 
 ## NLP Classifier
+A stentence transformer was trained over the 'Series Description' field.
 
+## Heuristic Model
+The metadata and pixel-based classifiers were used for predictions according to the following rule: if the confidence for the prediction using the metadata classifier was 0.7 or greater, the metadata prediction was used as the overall prediction; if the confidence was lower, the prediction from the pixel-based classifier was used. The accuracy was 93% over the test dataset. 
+
+![img.png](/assets/figures/FigPixel20230322.png)
 
 ## Fusion Model (FusionModel class)
 This is the fully connected layer that takes the concatenated probability vectors from 2 (metadata+pixel modesl) or 3 (also nlp) models. The accuracy is typically below that of the NLP by itself (93% compared with 96%), but higher than that of the pixel and metadata models if all 3 models are used (generally 87-90%, compared with 87-88% for the individual pixel and meta models). The confusion matrix for the fusion model when all 3 submodels are used is shown below. 
@@ -43,7 +51,7 @@ pip install -r requirements.txt
 cd app
 streamlit run demo.py
 ```
-The streamlit demo app will allow one to view images from the sample batch of studies in the source folder in the left sidebar. These images may or may not have labels embedded into the DICOM tags from prior label processing (generally, the prediction will show over the top left aspect of the image if it has been previously processed). One use of the demo app is to select studies to process (one study/patient at a time). This will generate predictions and write them into the DICOM tags by default. If the destination folder selctor is left blank, the default is for the images to be written back to the same folder, overwriting the previously unprocessed study. Other functions in the demo include the ability to get predictions for a single image (after selecting either the heuristic model combining metadata and pixel-based models as described above versus a fusion model). It is also possible to view a stuby by the series labels (part of the study in the SeriesDescription), or by the predicted class if the study has been previously processed by the classifier. Overall, the goal is to have a pass-through DICOM server that performs the predictions and sends the processed images back to the souce, but this current demo shows proof of concept and provides a user interface to interact with a study of choice. 
+The streamlit demo app will allow one to view images from the sample batch of studies in the source folder in the left sidebar. These images may or may not have labels embedded into the DICOM tags from prior label processing (generally, the prediction will show over the top left aspect of the image if it has been previously processed). One use of the demo app is to select studies to process (one study/patient at a time). This will generate predictions and write them into the DICOM tags by default. If the destination folder selctor is left blank, the default is for the images to be written back to the same folder, overwriting the previously unprocessed study. Other functions in the demo include the ability to get predictions for a single image (after selecting either the heuristic model combining metadata and pixel-based models as described above versus a fusion model). It is also possible to view a study by the series labels (part of the study in the SeriesDescription), or by the predicted class if the study has been previously processed by the classifier. Overall, the goal is to have a pass-through DICOM server that performs the predictions and sends the processed images back to the souce, but this current demo shows proof of concept and provides a user interface to interact with a study of choice. 
 
 **4. Script process_tree.py**
 
