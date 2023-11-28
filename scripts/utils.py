@@ -42,6 +42,13 @@ except ImportError:
 # from config import sentence_encoder, series_description_column
 
 
+#Core utilities for working with DICOM files. 
+# Utilizes the `pydicom` and `fastcore` packages. 
+# Some ideas borrowed from [fastai.medical.image](https://github.com/fastai/fastai/blob/master/fastai/medical/imaging.py).
+# Some ideas and code for loading DICOM images and preprocessing 
+# borrowed from Gauriau R, Bridge C, Chen L, Kitamura F, Tenenholtz NA, Kirsch JE, Andriole KP, Michalski MH, Bizzo BC: 
+# "Using DICOM Metadata for Radiological Image Series Categorization: a Feasibility Study on Large Clinical Brain MRI Datasets",  Journal of Digital Imaging (2020) 33:747-762.
+
 ### gets the dicom files from a provided directory ###
 def get_dicoms(path, first_dcm=False, **kwargs):
     "Walk `path` to get DICOM file names from specific extensions, then read files into a `pandas.DataFrame`. If `first_dcm=True`, only read first file from each folder."
@@ -107,8 +114,6 @@ pd.DataFrame.from_dicoms = classmethod(from_dicoms)
 
 
 def get_series_fp(fn): return Path(fn).parent
-
-
 
 
 

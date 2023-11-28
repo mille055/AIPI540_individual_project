@@ -6,6 +6,8 @@ import torch.optim as optim
 import pickle
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
+import torch.nn as nn
+import torch.optim as optim
 
 from fusion_model.fus_model import FusionModel
 from scripts.cnn.cnn_inference import pixel_inference, load_pixel_model
